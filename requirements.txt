@@ -1,0 +1,30 @@
+# Django Core
+Django==4.2.7
+
+# Django REST Framework
+djangorestframework==3.14.0
+drf-spectacular==0.26.5
+
+# Database
+psycopg2-binary==2.9.9
+
+# Environment
+python-decouple==3.8
+
+# CORS
+django-cors-headers==4.3.1
+
+# Authentication
+django-rest-framework-simplejwt==5.3.0
+
+# Celery
+celery==5.3.4
+redis==5.0.1
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+
+# Code Quality
+flake8==6.1.0
+black==23.11.0
