@@ -11,3 +11,6 @@ class User(AbstractUser):
         db_table = 'users'
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        
+    def __str__(self):
+        return self.telegram_id if self.telegram_id else self.phone
