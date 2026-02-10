@@ -75,112 +75,44 @@
 - Реализация обновления токена
 - Создание интерцепторов для автоматической подстановки токена
 
-### Задача 6: Страница заданий (Frontend)
-- Список заданий с фильтрацией и поиском
-- Создание нового задания
-- Редактирование задания
-- Просмотр деталей задания
+#### ✅ Задача 6: Лента заданий для исполнителей (Frontend)
 
-### Задача 7: Страница документов (Frontend)
-- Просмотр контрактов и актов
-- Загрузка PDF документов
-- Подписание документов
+**Реализована полная система ленты заданий:**
 
-### Задача 8: Дашборд и статистика
-- Панель управления для заказчиков
-- Панель управления для исполнителей
-- Графики и аналитика
+1. **Redux Store для заданий** (`frontend/src/features/tasks/tasksSlice.ts`)
+   - Управление состоянием заданий (tasks, loading, error)
+   - Async thunk action для fetchTasks
+   - Интеграция с API через axios
+   - Типизация Task interface
 
----
+2. **Страница TaskFeed** (`frontend/src/pages/tasks/TaskFeed.tsx`)
+   - Лента всех опубликованных заданий
+   - Фильтрация по названию, категории и бюджету
+   - Отображение списка заданий через TaskCard компонент
+   - Обработка состояний загрузки и ошибок
 
-## Структура проекта
+3. **Страница MyTasks** (`frontend/src/pages/tasks/MyTasks.tsx`)
+   - Отображение активных заданий исполнителя
+   - Фильтрация по executor_id и статусу in_progress
+   - Защищённый маршрут (требуется авторизация)
 
-```
-konsol-pro-clone/
-├── backend/                 # Django backend
-│   ├── users/              # Модуль пользователей
-│   ├── tasks/              # Модуль заданий
-│   └── contracts/          # Модуль документов
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── app/           # Redux store
-│   │   ├── features/      # Redux slices
-│   │   │   └── auth/      # Авторизация
-│   │   ├── pages/         # Страницы
-│   │   │   └── auth/      # Login, Register
-│   │   ├── utils/         # API конфигурация
-│   │   ├── App.tsx        # Главный компонент
-│   │   └── routes.tsx     # Маршрутизация
-│   └── package.json
-├── config/                 # Конфигурация проекта
-├── docker-compose.yml
-└── README.md
-```
+4. **Страница TaskHistory** (`frontend/src/pages/tasks/TaskHistory.tsx`)
+   - История завершённых заданий
+   - Фильтрация по статусу completed
+   - Отображение бейджа "Завершено"
+   - Защищённый маршрут
 
-## Установка и запуск
+5. **Компонент TaskCard** (`frontend/src/components/TaskCard.tsx`)
+   - Карточка задания с основной информацией
+   - Отображение: заголовок, описание, бюджет, категория, дедлайн
+   - Ссылка на детальную страницу задания
+   - Русская локализация
 
-### Backend
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
-```
+6. **Маршрутизация** (`frontend/src/routes.tsx`)
+   - Добавлены маршруты:
+     - `/tasks` → TaskFeed (публичный)
+     - `/my-tasks` → MyTasks (защищённый)
+     - `/task-history` → TaskHistory (защищённый)
+   - Интеграция с ProtectedRoute wrapper
 
-### Frontend
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### Docker
-```bash
-docker-compose up --build
-```
-
-## API Endpoints
-
-### Авторизация
-- `POST /api/users/register/` - Регистрация
-- `POST /api/users/login/` - Вход
-- `GET /api/users/profile/` - Профиль пользователя
-- `POST /api/token/refresh/` - Обновление токена
-
-### Задания
-- `GET /api/tasks/` - Список заданий
-- `POST /api/tasks/` - Создать задание
-- `GET /api/tasks/{id}/` - Детали задания
-- `PUT /api/tasks/{id}/` - Обновить задание
-- `POST /api/tasks/{id}/publish/` - Опубликовать задание
-
-### Документы
-- `GET /api/contracts/` - Список контрактов
-- `POST /api/contracts/` - Создать контракт
-- `GET /api/contracts/{id}/download_pdf/` - Скачать PDF
-- `POST /api/contracts/{id}/sign/` - Подписать документ
-
-## Стек технологий
-
-### Backend
-- Python 3.11
-- Django 5.0
-- Django REST Framework
-- PostgreSQL
-- ReportLab (PDF генерация)
-- JWT Authentication
-
-### Frontend
-- React 18.2
-- TypeScript 5.3
-- Redux Toolkit 2.0
-- React Router 6.21
-- Axios 1.6
-- Vite 3.5
-
-### DevOps
-- Docker
-- Docker Compose
-- Nginx
+**Результат:** Полнофункциональный UI для просмотра ленты заданий, управления активными заданиями и просмотра истории для исполнителей.
