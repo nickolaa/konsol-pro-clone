@@ -1,0 +1,190 @@
+# Frontend для Konsol-Pro Clone
+
+React + TypeScript приложение с Redux Toolkit для платформы работы с самозанятыми.
+
+## Структура проекта
+
+```
+frontend/
+├── public/
+│   ├── index.html
+│   └── favicon.ico
+├── src/
+│   ├── app/
+│   │   ├── store.ts              # Конфигурация Redux store
+│   │   └── hooks.ts              # Typed hooks для Redux
+│   ├── features/
+│   │   ├── auth/
+│   │   │   ├── authSlice.ts
+│   │   │   └── authAPI.ts
+│   │   ├── tasks/
+│   │   │   ├── tasksSlice.ts
+│   │   │   ├── tasksAPI.ts
+│   │   │   └── components/
+│   │   ├── contracts/
+│   │   │   ├── contractsSlice.ts
+│   │   │   └── contractsAPI.ts
+│   │   └── payments/
+│   │       ├── paymentsSlice.ts
+│   │       └── paymentsAPI.ts
+│   ├── layouts/
+│   │   ├── CompanyLayout.tsx     # Layout для компаний (работодателей)
+│   │   ├── FreelancerLayout.tsx  # Layout для исполнителей
+│   │   └── AuthLayout.tsx        # Layout для страниц авторизации
+│   ├── pages/
+│   │   ├── company/
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── Tasks.tsx
+│   │   │   ├── CreateTask.tsx
+│   │   │   └── Contracts.tsx
+│   │   ├── freelancer/
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── TaskList.tsx
+│   │   │   └── MyTasks.tsx
+│   │   └── auth/
+│   │       ├── Login.tsx
+│   │       └── Register.tsx
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── Header.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── Button.tsx
+│   │   │   └── Modal.tsx
+│   │   └── tasks/
+│   │       ├── TaskCard.tsx
+│   │       └── TaskForm.tsx
+│   ├── types/
+│   │   ├── auth.types.ts
+│   │   ├── task.types.ts
+│   │   └── user.types.ts
+│   ├── utils/
+│   │   ├── api.ts               # Axios instance
+│   │   └── helpers.ts
+│   ├── App.tsx
+│   ├── index.tsx
+│   └── routes.tsx               # React Router configuration
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## Технологии
+
+- **React 18** - UI библиотека
+- **TypeScript** - Типизация
+- **Redux Toolkit** - Управление состоянием
+- **React Router v6** - Роутинг
+- **Axios** - HTTP клиент
+- **React Scripts** - Build tools
+
+## Redux Store Structure
+
+```typescript
+interface RootState {
+  auth: AuthState;        // Аутентификация и пользователь
+  tasks: TasksState;      // Задания
+  contracts: ContractsState;  // Договоры
+  payments: PaymentsState;    // Выплаты
+}
+```
+
+## Роутинг
+
+### Для компаний (работодателей):
+- `/company/dashboard` - Главная панель
+- `/company/tasks` - Список заданий
+- `/company/tasks/create` - Создание задания
+- `/company/tasks/:id` - Детали задания
+- `/company/contracts` - Договоры
+- `/company/payments` - Выплаты
+
+### Для исполнителей:
+- `/freelancer/dashboard` - Главная панель
+- `/freelancer/tasks` - Доступные задания
+- `/freelancer/my-tasks` - Мои задания
+- `/freelancer/contracts` - Мои договоры
+- `/freelancer/payments` - Мои выплаты
+
+### Общие:
+- `/login` - Вход
+- `/register` - Регистрация
+- `/` - Главная (редирект в зависимости от роли)
+
+## Layouts
+
+### CompanyLayout
+```typescript
+- Header с навигацией для компаний
+- Sidebar с основными разделами
+- Уведомления и профиль
+```
+
+### FreelancerLayout  
+```typescr{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}ipt
+- Header с навигацией для исполнителей
+- Sidebar с доступными заданиями
+- Статистика и профиль
+```
+
+## Установка и запуск
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+## Build для production
+
+```bash
+npm run build
+```
+
+## Переменные окружения
+
+Создайте файл `.env` в папке frontend:
+
+```
+REACT_APP_API_URL=http://localhost:8000/api
+REACT_APP_WS_URL=ws://localhost:8000/ws
+```
+
+## TODO: Создать файлы
+
+1. Настроить роутинг (routes.tsx)
+2. Создать layouts для компаний и исполнителей
+3. Настроить Redux store
+4. Создать slices для auth, tasks, contracts, payments
+5. Создать API клиенты
+6. Создать базовые компоненты
+7. Создать страницы для всех роутов
