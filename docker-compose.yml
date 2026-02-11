@@ -17,6 +17,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - konsol_network
 
   redis:
     image: redis:7-alpine
@@ -30,55 +32,105 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+    networks:
+      - konsol_network
 
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: konsol_backend
-    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --reload
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --reload"
     volumes:
-      - ./backend:/app
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     ports:
       - "8000:8000"
-    env_file:
-      - ./backend/.env
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-change-this-in-production
+      - DATABASE_URL=postgresql://konsol_user:konsol_password@db:5432/konsol_db
+      - POSTGRES_DB=konsol_db
+      - POSTGRES_USER=konsol_user
+      - POSTGRES_PASSWORD=konsol_password
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - konsol_network
 
   celery:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: konsol_celery
     command: celery -A config worker -l info
     volumes:
-      - ./backend:/app
-    env_file:
-      - ./backend/.env
+      - .:/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-change-this-in-production
+      - DATABASE_URL=postgresql://konsol_user:konsol_password@db:5432/konsol_db
+      - POSTGRES_DB=konsol_db
+      - POSTGRES_USER=konsol_user
+      - POSTGRES_PASSWORD=konsol_password
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - db
       - redis
       - backend
+    networks:
+      - konsol_network
 
   celery-beat:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: konsol_celery_beat
-    command: celery -A config beat -l info
+    command: celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - ./backend:/app
-    env_file:
-      - ./backend/.env
+      - .:/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-change-this-in-production
+      - DATABASE_URL=postgresql://konsol_user:konsol_password@db:5432/konsol_db
+      - POSTGRES_DB=konsol_db
+      - POSTGRES_USER=konsol_user
+      - POSTGRES_PASSWORD=konsol_password
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - db
       - redis
       - backend
+    networks:
+      - konsol_network
 
 volumes:
   postgres_data:
   redis_data:
+  static_volume:
+  media_volume:
+
+networks:
+  konsol_network:
+    driver: bridge
