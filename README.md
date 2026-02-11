@@ -116,3 +116,29 @@
    - Интеграция с ProtectedRoute wrapper
 
 **Результат:** Полнофункциональный UI для просмотра ленты заданий, управления активными заданиями и просмотра истории для исполнителей.
+
+
+#### ✅ Задача 7: Интерфейс пополнения баланса и выплат (Backend + Frontend)
+
+**Реализована базовая система платежей и транзакций:**
+
+1. **Модель Transaction** (`backend/models.py`)
+   - Типы транзакций: deposit (пополнение), payout (выплата), payment (оплата задания)
+   - Статусы: pending, completed, failed
+   - Связь с пользователем и заданием
+   - Поля: amount, description, created_at, processed_at
+
+2. **TransactionSerializer** (`backend/serializers.py`)
+   - Сериализация транзакций с UserSerializer
+   - Display поля для transaction_type и status
+   - Read-only поля: id, user, created_at, processed_at
+
+3. **Redux Store для платежей** (`frontend/src/features/payments/paymentsSlice.ts`)
+   - Управление состоянием: transactions, balance, loading, error
+   - Async thunks:
+     - fetchTransactions - получение истории транзакций
+     - createDeposit - создание пополнения баланса
+     - requestPayout - запрос на выплату
+   - Типизация Transaction interface
+
+**Результат:** Фундамент для системы платежей - модели данных, сериализаторы и Redux инфраструктура для управления транзакциями, пополнениями баланса и выплатами.
