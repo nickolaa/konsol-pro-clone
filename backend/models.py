@@ -251,3 +251,22 @@ class Transaction(models.Model):
     
     def __str__(self):
         return f'{self.get_transaction_type_display()} - {self.amount} руб. ({self.user.email})'
+
+
+class Review(models.Model):
+    \"\"\"Модель отзыва о работе исполнителя\"\"\"
+    task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='review')
+    employer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_reviews')
+    freelancer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_reviews')
+    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)], verbose_name='Оценка')
+    comment = models.TextField(verbose_name='Комментарий', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'reviews'
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Отзыв {self.rating} для {self.freelancer} от {self.employer}'
