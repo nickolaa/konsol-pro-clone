@@ -218,3 +218,36 @@ class Signature(models.Model):
     
     def __str__(self):
         return f'Подпись {self.user} - {self.document_type} #{self.document_id}'
+
+
+class Transaction(models.Model):
+    """Модель транзакций для пополнения баланса и выплат"""
+    TRANSACTION_TYPE_CHOICES = [
+        ('deposit', 'Пополнение'),
+        ('payout', 'Выплата'),
+        ('payment', 'Оплата задания'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', 'В обработке'),
+        ('completed', 'Завершена'),
+        ('failed', 'Отклонена'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
+    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPE_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    description = models.TextField(blank=True)
+    task = models.ForeignKey('Task', on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        db_table = 'transactions'
+        verbose_name = 'Транзакция'
+        verbose_name_plural = 'Транзакции'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f'{self.get_transaction_type_display()} - {self.amount} руб. ({self.user.email})'
