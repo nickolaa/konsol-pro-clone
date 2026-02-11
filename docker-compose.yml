@@ -123,6 +123,18 @@ services:
     networks:
       - konsol_network
 
+        frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: konsol_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - konsol_network
+
 volumes:
   postgres_data:
   redis_data:
