@@ -16,8 +16,7 @@ django-cors-headers==4.3.1
 
 # Authentication
 # Fixed simplejwt version for python 3.11 compatibility
-django-rest-framework-simplejwt==5.3.1
-
+djangorestframework-simplejwt==5.3.1
 # Celery
 celery==5.3.4
 redis==5.0.1
