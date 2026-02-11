@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'django_filters',
-    'celery',
+    
     # Local apps
     'users',
 ]
