@@ -116,14 +116,14 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-      depends_on:
+    depends_on:
       - db
       - redis
       - backend
-      networks:
+    networks:
       - konsol_network
 
-      frontend:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
