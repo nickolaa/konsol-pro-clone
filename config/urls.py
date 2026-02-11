@@ -1,9 +1,11 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, redirect
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+        path('', redirect, {'url': '/api/schema/'}, name='root'),
+
     
     # API Schema
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
