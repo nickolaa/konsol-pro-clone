@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task, TaskTemplate, Document, Payment
+from .models import Task, TaskTemplate, Document, Payment, Transaction
 from users.models import User
 
 
@@ -113,3 +113,15 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = ['id', 'task', 'freelancer', 'amount', 'status', 'status_display', 
                   'created_at', 'processed_at']
         read_only_fields = ['id', 'created_at', 'processed_at']
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    transaction_type_display = serializers.CharField(source='get_transaction_type_display', read_only=True)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    
+    class Meta:
+        model = Transaction
+        fields = ['id', 'user', 'transaction_type', 'transaction_type_display', 'amount', 
+                  'status', 'status_display', 'description', 'task', 'created_at', 'processed_at']
+        read_only_fields = ['id', 'user', 'created_at', 'processed_at']
