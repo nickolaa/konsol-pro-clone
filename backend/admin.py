@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from users.models import User
-from .models import Task, TaskTemplate, Document, Payment, Contract, Act, ContractTemplate, Signature, Transaction
+from .models import Task, TaskTemplate, Document, Payment, Contract, Act, ContractTemplate, Signature, Transaction, Review
 
 
 @admin.register(User)
@@ -210,4 +210,11 @@ class ContractTemplateAdmin(admin.ModelAdmin):
 class SignatureAdmin(admin.ModelAdmin):
     list_display = ['user', 'document_type', 'created_at']
     list_filter = ['document_type', 'created_at']
+
+    @admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['task', 'employer', 'freelancer', 'rating', 'created_at']
+    list_filter = ['rating', 'created_at']
+    search_fields = ['task__title', 'employer__email', 'freelancer__email', 'comment']
+    readonly_fields = ['created_at']
     search_fields = ['user__email']
